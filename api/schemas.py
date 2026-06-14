@@ -21,7 +21,10 @@ class BookBase(BaseModel):
     year: int
 
 class LibraryBook(BookBase):
-    reading_status: ReadingStatus
+    status: ReadingStatus
+
+    class Config:
+        from_attributes = True
 
 
 class BookResponse(BookBase):
