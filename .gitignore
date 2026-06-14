@@ -7,3 +7,4 @@ __pycache__/
 *.pyc
 .env
 todo.txt
+coreML/research/data

@@ -2,6 +2,7 @@
 
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from api.models import ReadingStatus
 
 
 class UserBase(BaseModel):
@@ -18,6 +19,9 @@ class BookBase(BaseModel):
     title: str = Field(min_length=1, max_length=100)
     author: str = Field(min_length=1, max_length=50)
     year: int
+
+class LibraryBook(BookBase):
+    reading_status: ReadingStatus
 
 
 class BookResponse(BookBase):
