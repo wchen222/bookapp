@@ -1,6 +1,7 @@
-from api.schemas import UserBase, BookBase, UserCreate, Token, BookResponse
+from api.schemas import UserBase, BookBase, UserCreate, Token, BookResponse, PaginatedResponse
 from api.database import Base, engine, get_db
 import api.models as models
+from api.services import make_paginated_query
 
 
 from typing import Annotated
@@ -10,14 +11,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 router = APIRouter()
-@router.get("/search", response_model=list[BookBase])
-async def search_books(
-        book_title: str,
-        db: Annotated[AsyncSession, Depends(get_db)]
-):
-    result = await db.execute(select(models.Book).where(models.Book.title.ilike(f"%{book_title}%")))
-    return result.scalars().all()
-
 
 
 
@@ -43,11 +36,31 @@ async def create_book(
 
 #write patch endpoint to update book status in library
 
-@router.get("", response_model=list[BookResponse])
-async def get_books(db: Annotated[AsyncSession, Depends(get_db)]):
-    result = await db.execute(
-        select(models.Book)
-    )
 
-    books = result.scalars().all()
-    return books
+#async def get_book_helper(db: AsyncSession, skip: int, limit: int):
+
+
+@router.get("/search", response_model=PaginatedResponse[BookBase])
+async def search_books(
+        book_title: str,
+        db: Annotated[AsyncSession, Depends(get_db)],
+        skip: Annotated[int, Query(ge=0)] = 0,
+        limit: Annotated[int, Query(ge=1, le=100)] = 20,
+):
+    query = (select(models.Book).where(models.Book.title.ilike(f"%{book_title}%")))
+    return await make_paginated_query(db, query, skip, limit)
+
+
+@router.get("",
+            response_model=PaginatedResponse[BookBase])
+async def get_books(
+        db: Annotated[AsyncSession, Depends(get_db)],
+        skip: Annotated[int, Query(ge=0)] = 0,
+        limit: Annotated[int, Query(ge=1, le=100)] = 20,
+):
+    query = select(models.Book)
+    return await make_paginated_query(db, query, skip, limit)
+
+
+
+

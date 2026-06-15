@@ -40,7 +40,7 @@ async def lifespan(_app: FastAPI):
     yield
     await engine.dispose()
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, swagger_ui_parameters={"tryItOutEnabled": True})
 #app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(users, prefix="/api/users", tags=["Users"])
 app.include_router(books, prefix="/api/books", tags=["Book Catalog"])
