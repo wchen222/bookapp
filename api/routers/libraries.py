@@ -1,4 +1,4 @@
-from api.schemas import UserBase, BookBase, UserCreate, Token, BookResponse, LibraryBook, PaginatedResponse
+from api.schemas import UserBase, BookBase, UserCreate, Token, AddLibraryBook, LibraryBook, PaginatedResponse
 from api.database import Base, engine, get_db
 import api.models as models
 from api.auth import CurrentUser
@@ -19,12 +19,11 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED
 )
 async def add_book(
-        target_isbn: str,
+        payload: Annotated[AddLibraryBook, Depends()], # change this later for dynamic json or form route
         current_user: CurrentUser,
         db: Annotated[AsyncSession, Depends(get_db)],
-        reading_status: models.ReadingStatus | None = None,
 ):
-    book = await check_book_exists(target_isbn, db)
+    book = await check_book_exists(payload.isbn, db)
     duplicate_check = await db.execute(
         select(models.UserBookLink)
         .where(models.UserBookLink.user_id == current_user.id,
@@ -39,7 +38,7 @@ async def add_book(
     new_entry = models.UserBookLink(
         user_id = current_user.id,
         book_id=book.id,
-        status = reading_status,
+        status = payload.status,
     )
     db.add(new_entry)
     await db.commit()

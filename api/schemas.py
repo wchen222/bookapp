@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
 from typing import Generic, TypeVar
 from api.models import ReadingStatus
 
@@ -23,6 +23,19 @@ class BookBase(BaseModel):
 class LibraryBook(BookBase):
     model_config = ConfigDict(from_attributes=True)
     status: ReadingStatus
+    rating: int
+
+class AddLibraryBook(BaseModel):
+    isbn: str = Field(min_length=1, max_length=100)
+    status: ReadingStatus = ReadingStatus.UNREAD
+    rating: int = Field(default=0, ge=0, le=10)
+    notes: str | None = Field(default=None, max_length=5000)
+
+    @model_validator(mode="after")
+    def check_combination(self) -> "AddLibraryBook":
+        if self.status == "unread" and self.rating != 0:
+            raise ValueError("Rating cannot be set on an unread book")
+        return self
 
 
 class BookResponse(BookBase):
@@ -41,6 +54,4 @@ class PaginatedResponse(BaseModel, Generic[T]):
     skip: int
     limit: int
     has_more: bool
-
-
 

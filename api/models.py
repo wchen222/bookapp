@@ -38,9 +38,6 @@ class Book(Base):
     year: Mapped[int] = mapped_column(Integer)
 
 
-#class library(Base):
-#    __tablename__ = "libraries"
-
 
 class UserBookLink(Base):
     __tablename__ = "user_book_links"
@@ -58,10 +55,14 @@ class UserBookLink(Base):
     status: Mapped[ReadingStatus] = mapped_column(SQLEnum(ReadingStatus),
                                                    default=ReadingStatus.UNREAD)
 
+    rating: Mapped[int] = mapped_column(Integer,
+                                        CheckConstraint("(rating >= 0) and (rating <= 10)",
+                                                        name="check_rating_range"),
+                                        default=0) # 0 serves as an implicit rating
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    #review: Mapped[str | None] = mapped_column(String(1000), nullable=True, default=None)
 
-class Review(Base):
+'''class Review(Base):
     __tablename__ = "reviews"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -75,7 +76,7 @@ class Review(Base):
     stars: Mapped[int] = mapped_column(
         CheckConstraint("stars >= 1 and stars <= 5", name="check_stars_range"),
     )
-    review_text: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    review_text: Mapped[str | None] = mapped_column(String(2000), nullable=True)'''
 
     # Relationship properties (Virtual Python-only links)
     #author: Mapped["User"] = relationship()
