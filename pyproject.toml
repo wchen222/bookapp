@@ -6,6 +6,7 @@ requires-python = ">=3.14"
 dependencies = [
     "aiosqlite>=0.22.1",
     "fastapi[standard]>=0.136.3",
+    "ipykernel>=7.3.0",
     "pandas>=3.0.3",
     "pandas-stubs~=3.0.3",
     "pwdlib[argon2]>=0.3.0",

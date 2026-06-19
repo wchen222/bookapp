@@ -54,8 +54,6 @@ def general_http_exception_handler(request: Request, exception: StarletteHTTPExc
         if exception.detail
         else "error"
     )
-
-    #if request.url.path.startswith("/api"):
     return JSONResponse(content = {"detail": message}, status_code=exception.status_code)
 
 

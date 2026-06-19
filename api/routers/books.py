@@ -40,7 +40,7 @@ async def create_book(
 #async def get_book_helper(db: AsyncSession, skip: int, limit: int):
 
 
-@router.get("/search", response_model=PaginatedResponse[BookBase])
+@router.get("/search/", response_model=PaginatedResponse[BookBase])
 async def search_books(
         book_title: str,
         db: Annotated[AsyncSession, Depends(get_db)],

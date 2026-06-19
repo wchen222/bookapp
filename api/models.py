@@ -1,6 +1,5 @@
 from __future__ import annotations
 import uuid
-
 from datetime import UTC, datetime
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, Column, Uuid, Enum as SQLEnum, CheckConstraint

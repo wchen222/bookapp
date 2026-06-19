@@ -6,13 +6,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.schemas import PaginatedResponse
 
 
-
 def get_book_query(user_id):
-    query = (select(models.Book.isbn,
-               models.Book.title,
-               models.Book.author,
-               models.Book.year,
-               models.UserBookLink.status)
+    query = (select(
+        models.Book.isbn,
+        models.Book.title,
+        models.Book.author,
+        models.Book.year,
+        models.UserBookLink.status,
+        models.UserBookLink.rating,
+        models.UserBookLink.notes,
+    )
         .join(models.UserBookLink, models.Book.id == models.UserBookLink.book_id)
         .where(models.UserBookLink.user_id == user_id)
     )
@@ -46,7 +49,6 @@ async def check_library_entry(user_id: uuid.UUID, book_id: int, db: AsyncSession
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Library Entry Not Found",
         )
-
     return library_entry
 
 
