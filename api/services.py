@@ -12,6 +12,8 @@ def get_book_query(user_id):
         models.Book.title,
         models.Book.author,
         models.Book.year,
+        models.Book.average_rating,
+        models.Book.rating_count,
         models.UserBookLink.status,
         models.UserBookLink.rating,
         models.UserBookLink.notes,

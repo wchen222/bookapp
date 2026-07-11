@@ -3,7 +3,7 @@ import asyncio
 import api.models as models
 from api.database import AsyncSessionLocal
 
-BOOK_CSV_PATH = "./data/books_clean.csv"
+BOOK_CSV_PATH = "./data/books_clean_v2.csv"
 BATCH_SIZE = 5000
 
 async def seed_books():
@@ -19,6 +19,8 @@ async def seed_books():
                     title=book["Book-Title"],
                     author=book["Book-Author"],
                     year=int(book["Year-Of-Publication"]),
+                    average_rating=float(book["mean"]),
+                    rating_count=int(book["count"]),
                 )
                 books_batch.append(new_book)
 

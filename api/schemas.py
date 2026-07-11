@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, model_validator, field_serializer
 from typing import Generic, TypeVar
 from api.models import ReadingStatus
 
@@ -18,6 +18,15 @@ class BookBase(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     author: str = Field(min_length=1, max_length=50)
     year: int
+    average_rating: float
+    rating_count: int
+
+    @field_serializer("average_rating")
+    def serialize_rating(self, rating: float) -> float:
+        return round(rating, 1)
+
+    class Config:
+        from_attributes = True
 
 # outgoing datatype for library display
 class LibraryBook(BookBase):

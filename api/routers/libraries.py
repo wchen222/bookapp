@@ -40,8 +40,9 @@ async def add_book(
     # add to library
     new_entry = models.UserBookLink(
         user_id = current_user.id,
-        book_id=book.id,
+        book_id= book.id,
         status = payload.status,
+        rating=payload.rating,
     )
     db.add(new_entry)
     await db.commit()

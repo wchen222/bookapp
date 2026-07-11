@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid
 from datetime import UTC, datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, Column, Uuid, Enum as SQLEnum, CheckConstraint
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Float, Text, Column, Uuid, Enum as SQLEnum, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from api.database import Base
@@ -35,6 +35,8 @@ class Book(Base):
     title: Mapped[str] = mapped_column(String)
     author: Mapped[str] = mapped_column(String)
     year: Mapped[int] = mapped_column(Integer)
+    average_rating: Mapped[float] = mapped_column(Float, default=0.0)
+    rating_count: Mapped[int] = mapped_column(Integer, default=0)
 
 
 
