@@ -19,12 +19,12 @@ print(f"Using device: {DEVICE}")
 DATA_PATH = "../../data/Ratings.csv"
 df = pd.read_csv(DATA_PATH)
 
-ratings_df, user_to_idx, movie_to_idx = prepare_data_mappings(df)
+ratings_df, user_to_idx, item_to_idx = prepare_data_mappings(df)
 
 mappings = {
     'user_to_idx': {int(k): int(v) for k, v in user_to_idx.items()},
-    'movie_to_idx': {int(k): int(v) for k, v in user_to_idx.items()},
-    'idx_to_movie': {v: k for k, v in movie_to_idx.items()}
+    'item_to_idx': {int(k): int(v) for k, v in user_to_idx.items()},
+    'idx_to_item': {v: k for k, v in item_to_idx.items()}
 }
 
 with open("artifacts/mappings.json", 'w') as f:
@@ -36,7 +36,7 @@ train_loader, val_loader, test_loader = get_dataloaders(
                                             eval_batch_size=config.EVAL_BATCH_SIZE)
 
 # Training Loop
-model = MFModel(len(user_to_idx), len(movie_to_idx), num_features=config.NUM_FEATURES).to(DEVICE)
+model = MFModel(len(user_to_idx), len(item_to_idx), num_features=config.NUM_FEATURES).to(DEVICE)
 model.global_bias.data.fill_(ratings_df['Book-Rating'].mean())
 optimizer = torch.optim.AdamW(model.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
 criterion = nn.MSELoss()
