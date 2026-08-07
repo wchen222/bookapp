@@ -3,10 +3,11 @@ import torch
 def train_one_epoch(model, dataloader, optimizer, criterion, device):
     model.train()
     running_loss = 0.0
-    for users, items, ratings, in dataloader:
+    for users, items, ratings in dataloader:
         users, items, ratings = users.to(device), items.to(device), ratings.to(device)
         optimizer.zero_grad()
-        predictions = model(users, items)
+        predictions = model(users, items).squeeze()
+        ratings = ratings.float().squeeze()
         loss = criterion(predictions, ratings)
         loss.backward()
         optimizer.step()

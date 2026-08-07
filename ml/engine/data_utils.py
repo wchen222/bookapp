@@ -2,6 +2,8 @@ import torch
 from torch.utils.data import TensorDataset, DataLoader, random_split
 
 def prepare_data_mappings(df):
+    df.dropna(subset=['User-ID', 'ISBN', 'Book-Rating'])
+    df = df[df['Book-Rating'] > 0].copy()
     user_to_idx = {raw_id: idx for idx, raw_id in enumerate(df['User-ID'].unique())}
     item_to_idx = {raw_id: idx for idx, raw_id in enumerate(df['ISBN'].unique())}
     df['user_idx'] = df['User-ID'].map(user_to_idx)

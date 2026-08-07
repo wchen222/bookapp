@@ -13,7 +13,7 @@ class MFModel(nn.Module):
         self.global_bias = nn.Parameter(torch.zeros(1))
 
         nn.init.normal_(self.user_embeddings.weight, std=0.1)
-        nn.init.normal_(self.item_embeddingsm.weight, std=0.1)
+        nn.init.normal_(self.item_embeddings.weight, std=0.1)
         nn.init.zeros_(self.user_biases.weight)
         nn.init.zeros_(self.item_biases.weight)
 
