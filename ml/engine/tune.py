@@ -14,12 +14,15 @@ else:
     device = "cpu"
 print(device)
 
-file_path = "../../data/Ratings.csv"
-df = pd.read_csv(file_path)
+raw_ratings_df = pd.read_csv("../../data/Ratings.csv")
+raw_books_df = pd.read_csv("../../data/books_clean.csv")
 
-print(df.shape)
 
-df, user_to_idx, movie_to_idx = prepare_data_mappings(df)
+print(raw_ratings_df.shape)
+
+valid_isbns = set(raw_books_df['ISBN'].astype(str).str.strip())
+
+df, user_to_idx, movie_to_idx = prepare_data_mappings(raw_ratings_df, valid_isbns)
 
 train_loader, val_loader, test_loader = get_dataloaders(df, train_batch_size=512, eval_batch_size=1024)
 
@@ -27,9 +30,9 @@ print(df.shape)
 
 
 def objective(trial):
-    num_features = trial.suggest_categorical("num_features", [8, 16, 32, 64, 128])
-    lr = trial.suggest_float("lr", 1e-3, 1e-1, log=True)
-    weight_decay = trial.suggest_float("weight_decay", 1e-6, 1e-1, log=True)
+    num_features = trial.suggest_categorical("num_features", [8, 16, 32])
+    lr = trial.suggest_float("lr", 5e-4, 8e-3, log=True)
+    weight_decay = trial.suggest_float("weight_decay", 1e-4, 1e-1, log=True)
 
     model = MFModel(num_users=len(user_to_idx), num_items=len(movie_to_idx), num_features=num_features).to(device)
     model.global_bias.data.fill_(df['Book-Rating'].mean())

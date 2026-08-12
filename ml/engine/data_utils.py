@@ -1,9 +1,22 @@
 import torch
 from torch.utils.data import TensorDataset, DataLoader, random_split
+import pandas as pd
 
-def prepare_data_mappings(df):
-    df.dropna(subset=['User-ID', 'ISBN', 'Book-Rating'])
-    df = df[df['Book-Rating'] > 0].copy()
+
+def prepare_data_mappings(df, valid_isbns):
+    df = df.dropna(subset=['User-ID', 'ISBN', 'Book-Rating'])
+    df = df[df['Book-Rating'] >= 1].copy()
+
+    if valid_isbns is not None:
+        mask = df['ISBN'].isin(valid_isbns)
+        df = df[mask].copy()
+
+    # only include items with at least 3 ratings
+    item_counts = df['ISBN'].value_counts()
+    popular_items = item_counts[item_counts >= 3].index
+    df = df[df['ISBN'].isin(popular_items)].copy()
+
+
     user_to_idx = {raw_id: idx for idx, raw_id in enumerate(df['User-ID'].unique())}
     item_to_idx = {raw_id: idx for idx, raw_id in enumerate(df['ISBN'].unique())}
     df['user_idx'] = df['User-ID'].map(user_to_idx)
@@ -13,7 +26,7 @@ def prepare_data_mappings(df):
 def get_dataloaders(df, train_batch_size, eval_batch_size):
     dataset = TensorDataset(
         torch.tensor(df['user_idx'].values, dtype=torch.long),
-        torch.tensor(df['user_idx'].values, dtype=torch.long),
+        torch.tensor(df['item_idx'].values, dtype=torch.long),
         torch.tensor(df['Book-Rating'].values, dtype=torch.float32)
     )
 
@@ -33,3 +46,5 @@ def get_dataloaders(df, train_batch_size, eval_batch_size):
     test_loader = DataLoader(test_dataset, batch_size=eval_batch_size, shuffle=False)
 
     return train_loader, val_loader, test_loader
+
+

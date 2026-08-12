@@ -3,7 +3,7 @@ import asyncio
 import api.models as models
 from api.database import AsyncSessionLocal
 
-BOOK_CSV_PATH = "./data/books_clean_v2.csv"
+BOOK_CSV_PATH = "./data/books_clean.csv"
 BATCH_SIZE = 5000
 
 async def seed_books():

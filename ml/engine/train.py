@@ -16,14 +16,27 @@ else:
 print(f"Using device: {DEVICE}")
 
 # Data preparation
-DATA_PATH = "../../data/Ratings.csv"
-df = pd.read_csv(DATA_PATH)
+raw_ratings_df = pd.read_csv("../../data/Ratings.csv")
+raw_books_df = pd.read_csv("../../data/books_clean.csv")
 
-ratings_df, user_to_idx, item_to_idx = prepare_data_mappings(df)
+
+print("Raw Ratings ISBN count:", raw_ratings_df['ISBN'].nunique())
+print("Books Clean ISBN count:", raw_books_df['ISBN'].nunique())
+
+
+
+valid_isbns = set(raw_books_df['ISBN'].astype(str).str.strip())
+
+ratings_df, user_to_idx, item_to_idx = prepare_data_mappings(raw_ratings_df, valid_isbns)
+
+
+print(len(user_to_idx), len(item_to_idx))
+#import sys
+#sys.exit(0)
 
 mappings = {
     'user_to_idx': {int(k): int(v) for k, v in user_to_idx.items()},
-    'item_to_idx': {int(k): int(v) for k, v in user_to_idx.items()},
+    'item_to_idx': {str(k): int(v) for k, v in item_to_idx.items()},
     'idx_to_item': {v: k for k, v in item_to_idx.items()}
 }
 
