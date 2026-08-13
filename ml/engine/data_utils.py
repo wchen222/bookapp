@@ -1,7 +1,5 @@
 import torch
 from torch.utils.data import TensorDataset, DataLoader, random_split
-import pandas as pd
-
 
 def prepare_data_mappings(df, valid_isbns):
     df = df.dropna(subset=['User-ID', 'ISBN', 'Book-Rating'])

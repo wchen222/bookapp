@@ -78,3 +78,22 @@ async def make_paginated_query(db: AsyncSession,
         limit=limit,
         has_more=has_more,
     )
+
+async def get_recommended_book_order(
+    recommended_tuples: list[tuple[str, float]],
+    db: AsyncSession
+):
+    if not recommended_tuples:
+        return []
+
+    selected_isbns = [isbn for isbn, _ in recommended_tuples]
+
+    query = select(models.Book).where(models.Book.isbn.in_(selected_isbns))
+    result = await db.execute(query)
+    books = result.scalars().all()
+
+    book_map = {book.isbn: book for book in books}
+    ordered_books = [
+        book_map[isbn] for isbn in selected_isbns if isbn in book_map
+    ]
+    return ordered_books

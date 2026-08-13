@@ -4,7 +4,9 @@ from api.database import Base, engine, get_db
 import api.models as models
 from api.models import ReadingStatus
 from api.auth import CurrentUser
-from api.services import get_book_query, check_book_exists, check_library_entry, make_paginated_query
+from api.services import (get_book_query, check_book_exists,
+                          check_library_entry, make_paginated_query, get_recommended_book_order)
+from ml.engine.inference import cold_start_top_k, add_titles, load_model
 
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
@@ -61,6 +63,30 @@ async def get_library(
 ):
     query = get_book_query(current_user.id)
     return await make_paginated_query(db, query, skip, limit, is_scaler=False)
+
+
+@router.get("/recommendations",
+            response_model=list[BookBase],
+            status_code=status.HTTP_200_OK,
+)
+async def get_recommendations(
+        current_user: CurrentUser,
+        db: Annotated[AsyncSession, Depends(get_db)],
+):
+    user_res = await db.execute(
+        get_book_query(current_user.id)
+    )
+    user_library = user_res.all()
+    user_history = [(book.isbn, book.rating) for book in user_library]
+    model, mappings = load_model()
+    recommended_isbns = cold_start_top_k(user_history=user_history,
+                                           model=model,
+                                           mappings=mappings,
+                                           top_k=20,
+                                         )
+    recommended_books = await get_recommended_book_order(recommended_isbns, db)
+    return recommended_books
+
 
 
 '''
@@ -122,4 +148,3 @@ async def delete_book(
     library_entry = await check_library_entry(current_user.id, book.id, db)
     await db.delete(library_entry)
     await db.commit()
-
