@@ -17,7 +17,7 @@ print(f"Using device: {DEVICE}")
 
 # Data preparation
 raw_ratings_df = pd.read_csv("../../data/Ratings.csv")
-raw_books_df = pd.read_csv("../../data/books_clean.csv")
+raw_books_df = pd.read_csv("../../data/books_clean_fixed.csv")
 
 
 print("Raw Ratings ISBN count:", raw_ratings_df['ISBN'].nunique())
@@ -31,8 +31,6 @@ ratings_df, user_to_idx, item_to_idx = prepare_data_mappings(raw_ratings_df, val
 
 
 print(len(user_to_idx), len(item_to_idx))
-#import sys
-#sys.exit(0)
 
 mappings = {
     'user_to_idx': {int(k): int(v) for k, v in user_to_idx.items()},
@@ -74,7 +72,7 @@ for epoch in range(1, config.EPOCHS + 1):
             'optimizer_state_dict': optimizer.state_dict(),
             'val_loss': val_loss,
         },
-            "artifacts/model.pt"
+            f"artifacts/{config.MODEL_NAME}.pt"
         )
 
     stopper(val_loss)
@@ -82,7 +80,7 @@ for epoch in range(1, config.EPOCHS + 1):
         print(f"Early stopping at epoch {epoch}")
         break
 
-best_model = torch.load("artifacts/model.pt", weights_only=True)
+best_model = torch.load(f"artifacts/{config.MODEL_NAME}.pt", weights_only=True)
 model.load_state_dict(best_model['model_state_dict'])
 test_loss = evaluate(model=model, dataloader=test_loader, criterion=criterion, device=DEVICE)
 print(f"\nFinal Test Loss (MSE): {test_loss:.4f}")

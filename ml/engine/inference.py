@@ -62,7 +62,7 @@ def cold_start_top_k(
         weights_t = torch.tensor(weights, dtype=torch.float32).unsqueeze(1)
 
         item_vectors = model.get_item_vectors(indices_t)
-        amp = 2.5
+        amp = 2.0
         u_temp = amp * ((item_vectors * weights_t).sum(dim=0) / (torch.abs(weights_t).sum() + 1e-8))
         all_scores = model.predict_from_user_vector(u_temp)
 

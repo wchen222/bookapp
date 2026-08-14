@@ -11,7 +11,7 @@ def prepare_data_mappings(df, valid_isbns):
 
     # only include items with at least 3 ratings
     item_counts = df['ISBN'].value_counts()
-    popular_items = item_counts[item_counts >= 3].index
+    popular_items = item_counts[item_counts >= 10].index
     df = df[df['ISBN'].isin(popular_items)].copy()
 
 

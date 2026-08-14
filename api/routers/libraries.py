@@ -65,6 +65,36 @@ async def get_library(
     return await make_paginated_query(db, query, skip, limit, is_scaler=False)
 
 
+
+@router.patch("/{target_isbn}",
+              response_model=LibraryBook)
+async def update_book_status(
+        target_isbn: str,
+        payload: UpdateLibraryBook,
+        current_user: CurrentUser,
+        db: Annotated[AsyncSession, Depends(get_db)]
+):
+    # run our helper checks
+    book = await check_book_exists(target_isbn, db)
+    # this also fulfills our authorization
+    library_entry = await check_library_entry(current_user.id, book.id, db)
+    update_data = payload.model_dump(exclude_unset=True)
+
+    for key, value in update_data.items():
+        setattr(library_entry, key, value)
+
+    if library_entry.status == ReadingStatus.UNREAD and library_entry.rating != 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Rating cannot be set on an unread book"
+        )
+
+    await db.commit()
+    book_result = await db.execute(get_book_query(current_user.id).where(models.Book.isbn == target_isbn))
+    return book_result.one()
+
+
+
 @router.get("/recommendations",
             response_model=list[BookBase],
             status_code=status.HTTP_200_OK,
@@ -106,35 +136,6 @@ async def update_book_reading_status(
     await db.refresh(library_entry)
     book_result = await db.execute(get_book_query(current_user.id).where(models.Book.isbn == target_isbn))
     return book_result.one()'''
-
-
-@router.patch("/{target_isbn}",
-              response_model=LibraryBook)
-async def update_book_status(
-        target_isbn: str,
-        payload: UpdateLibraryBook,
-        current_user: CurrentUser,
-        db: Annotated[AsyncSession, Depends(get_db)]
-):
-    # run our helper checks
-    book = await check_book_exists(target_isbn, db)
-    # this also fulfills our authorization
-    library_entry = await check_library_entry(current_user.id, book.id, db)
-    update_data = payload.model_dump(exclude_unset=True)
-
-    for key, value in update_data.items():
-        setattr(library_entry, key, value)
-
-    if library_entry.status == ReadingStatus.UNREAD and library_entry.rating != 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Rating cannot be set on an unread book"
-        )
-
-    await db.commit()
-    book_result = await db.execute(get_book_query(current_user.id).where(models.Book.isbn == target_isbn))
-    return book_result.one()
-
 
 
 @router.delete("/{target_isbn}",

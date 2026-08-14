@@ -40,7 +40,7 @@ class MFModel(nn.Module):
         return self.item_embeddings(item_indices)
 
     @torch.no_grad()
-    def predict_from_user_vector(self, user_vector, bias_scale = .5):
+    def predict_from_user_vector(self, user_vector, bias_scale = 1):
         dot_products = torch.matmul(self.item_embeddings.weight, user_vector)
         raw_scores = self.global_bias + (self.item_biases.weight.squeeze() * bias_scale) + dot_products
         bounded_scores = torch.clamp(raw_scores, min=1.0, max=10.0)
