@@ -24,6 +24,7 @@ from starlette.concurrency import run_in_threadpool
 from api.routers.libraries import router as libraries
 from api.routers.users import router as users
 from api.routers.books import router as books
+from ml.engine.inference import load_model
 
 from api.auth import (
     CurrentUser,
@@ -37,6 +38,9 @@ from api.auth import (
 async def lifespan(_app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    model, mappings = load_model()
+    app.state.model = model
+    app.state.mappings = mappings
     yield
     await engine.dispose()
 

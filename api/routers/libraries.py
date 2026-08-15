@@ -1,3 +1,4 @@
+from starlette.concurrency import run_in_threadpool
 from api.schemas import UserBase, BookBase, UserCreate, Token, AddLibraryBook, LibraryBook, PaginatedResponse, \
     UpdateLibraryBook
 from api.database import Base, engine, get_db
@@ -6,10 +7,10 @@ from api.models import ReadingStatus
 from api.auth import CurrentUser
 from api.services import (get_book_query, check_book_exists,
                           check_library_entry, make_paginated_query, get_recommended_book_order)
-from ml.engine.inference import cold_start_top_k, add_titles, load_model
+from ml.engine.inference import cold_start_top_k
 
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status, Request
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -100,6 +101,7 @@ async def update_book_status(
             status_code=status.HTTP_200_OK,
 )
 async def get_recommendations(
+        request: Request,
         current_user: CurrentUser,
         db: Annotated[AsyncSession, Depends(get_db)],
 ):
@@ -108,12 +110,15 @@ async def get_recommendations(
     )
     user_library = user_res.all()
     user_history = [(book.isbn, book.rating) for book in user_library]
-    model, mappings = load_model()
-    recommended_isbns = cold_start_top_k(user_history=user_history,
-                                           model=model,
-                                           mappings=mappings,
-                                           top_k=20,
-                                         )
+    model = request.app.state.model
+    mappings = request.app.state.mappings
+    recommended_isbns = await run_in_threadpool(
+                                        cold_start_top_k,
+                                        user_history=user_history,
+                                        model=model,
+                                        mappings=mappings,
+                                        top_k=20,
+    )
     recommended_books = await get_recommended_book_order(recommended_isbns, db)
     return recommended_books
 
