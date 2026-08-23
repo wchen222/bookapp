@@ -1,28 +1,32 @@
+import numpy as np
 import torch
 import json
 import pandas as pd
 import ml.engine.config as config
 from ml.engine.models import MFModel
+import faiss
 
 
 def _book_name(df, item_id):
     return df.loc[df['ISBN'] == item_id, 'Book-Title'].values[0]
 
+
 def _format_top_k(
-    all_scores, top_k, mappings
+        all_scores, top_k, mappings
 ):
     k = min(top_k, len(all_scores))
     top_scores, top_indices = torch.topk(all_scores, k=k)
     recommendations = [(
-            mappings['idx_to_item'][str(idx.item())],
-            score.item())
+        mappings['idx_to_item'][str(idx.item())],
+        score.item())
         for score, idx in zip(top_scores, top_indices)]
     return recommendations
+
 
 def _calculate_item_weight(rating):
     if rating is None or rating == 0:
         return 2.0  # implicit weight of 2.0
-    return float(rating) - 5.0 # midpoint so 0 centered
+    return float(rating) - 5.0  # midpoint so 0 centered
 
 
 def load_model():
@@ -31,7 +35,7 @@ def load_model():
 
     num_users = len(mappings['user_to_idx'])
     num_items = len(mappings['item_to_idx'])
-    model_metadata = torch.load("ml/engine/artifacts/model.pt", weights_only=True)
+    model_metadata = torch.load("ml/engine/artifacts/model.pt", weights_only=True, map_location=torch.device('cpu'))
     loaded_model = MFModel(num_users=num_users, num_items=num_items, num_features=config.NUM_FEATURES)
     loaded_model.load_state_dict(model_metadata['model_state_dict'])
     loaded_model.eval()
@@ -72,6 +76,7 @@ def cold_start_top_k(
 
     return _format_top_k(all_scores, top_k, mappings)
 
+
 def add_titles(recommendations):
     res = []
     book_df = pd.read_csv("../../data/books_clean.csv")
@@ -81,3 +86,40 @@ def add_titles(recommendations):
         title = book_dict.get(isbn, "Unknown Title")
         res.append((isbn, title, item[1]))
     return res
+
+
+def faiss_cold_top_k(
+        user_history: list[tuple[str, float]],
+        item_embeddings,
+        faiss_index,
+        mappings: dict,
+        top_k: int
+):
+    valid_items = [
+        (mappings['item_to_idx'][str(isbn)], _calculate_item_weight(rating))
+        for isbn, rating in user_history
+        if str(isbn) in mappings['item_to_idx']
+    ]
+    if not valid_items:
+        seen_indices = []
+        u_temp = np.zeros(item_embeddings.shape[1], dtype=np.float32)
+    else:
+        seen_indices, weights = zip(*valid_items)
+        idx_arr = np.array(seen_indices, dtype=np.int64)
+        w_arr = np.array(weights, dtype=np.float32)[:, np.newaxis]
+
+        amp = 2.0
+        weighted_sum = (item_embeddings[idx_arr] * w_arr).sum(axis=0)
+        u_temp = amp * (weighted_sum / (np.abs(w_arr).sum() + 1e-8))
+
+    query_vec = np.hstack([u_temp, np.array([1.0], dtype=np.float32)]).astype("float32").reshape(1, -1)
+    distances, indices = faiss_index.search(query_vec, faiss_index.ntotal)
+
+    unsorted_scores = np.empty(faiss_index.ntotal, dtype=np.float32)
+    unsorted_scores[indices[0]] = distances[0]
+
+    all_scores = torch.from_numpy(unsorted_scores)
+
+    if seen_indices:
+        all_scores[torch.tensor(seen_indices, dtype=torch.long)] = float('-inf')
+    return _format_top_k(all_scores, top_k, mappings)

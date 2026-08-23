@@ -1,6 +1,8 @@
+import json
 from contextlib import asynccontextmanager
-
-from pydantic_extra_types import isbn
+from starlette.datastructures import State
+import faiss
+import numpy as np
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import FastAPI, status, Depends, Request, HTTPException
 from typing import Annotated
@@ -25,6 +27,22 @@ from api.routers.libraries import router as libraries
 from api.routers.users import router as users
 from api.routers.books import router as books
 from ml.engine.inference import load_model
+import os
+#os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+#
+
+import os
+
+# Must be set BEFORE importing torch
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+
+import torch
+
+# Pin PyTorch CPU threads inside Uvicorn worker process
+torch.set_num_threads(1)
+
 
 from api.auth import (
     CurrentUser,
@@ -38,11 +56,15 @@ from api.auth import (
 async def lifespan(_app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    model, mappings = load_model()
-    app.state.model = model
-    app.state.mappings = mappings
+    app.state.faiss_index = faiss.read_index("ml/engine/artifacts/items.index")
+    app.state.item_embeddings = np.load("ml/engine/artifacts/item_embeddings.npy")
+    with open("ml/engine/artifacts/mappings.json", "r") as f:
+        app.state.mappings = json.load(f)
     yield
+    del app.state.faiss_index
+    del app.state.item_embeddings
     await engine.dispose()
+
 
 app = FastAPI(lifespan=lifespan, swagger_ui_parameters={"tryItOutEnabled": True})
 #app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -58,14 +80,18 @@ def general_http_exception_handler(request: Request, exception: StarletteHTTPExc
         if exception.detail
         else "error"
     )
-    return JSONResponse(content = {"detail": message}, status_code=exception.status_code)
+    return JSONResponse(content={"detail": message}, status_code=exception.status_code)
 
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "Book Engine API is running"}
 
 
 @app.post("/api/auth/token", response_model=Token, tags=["Authentication"])
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    db: Annotated[AsyncSession, Depends(get_db)],
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        db: Annotated[AsyncSession, Depends(get_db)],
 ):
     result = await db.execute(
         select(models.User).where(
@@ -87,5 +113,3 @@ async def login_for_access_token(
         expires_delta=access_token_expires,
     )
     return Token(access_token=access_token, token_type="bearer")
-
-

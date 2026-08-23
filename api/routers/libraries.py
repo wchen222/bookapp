@@ -7,13 +7,12 @@ from api.models import ReadingStatus
 from api.auth import CurrentUser
 from api.services import (get_book_query, check_book_exists,
                           check_library_entry, make_paginated_query, get_recommended_book_order)
-from ml.engine.inference import cold_start_top_k
+from ml.engine.inference import faiss_cold_top_k
 
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status, Request
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-
 
 router = APIRouter()
 
@@ -42,9 +41,9 @@ async def add_book(
         )
     # add to library
     new_entry = models.UserBookLink(
-        user_id = current_user.id,
-        book_id= book.id,
-        status = payload.status,
+        user_id=current_user.id,
+        book_id=book.id,
+        status=payload.status,
         rating=payload.rating,
     )
     db.add(new_entry)
@@ -55,7 +54,7 @@ async def add_book(
 @router.get("",
             response_model=PaginatedResponse[LibraryBook],
             status_code=status.HTTP_200_OK,
-)
+            )
 async def get_library(
         current_user: CurrentUser,
         db: Annotated[AsyncSession, Depends(get_db)],
@@ -64,7 +63,6 @@ async def get_library(
 ):
     query = get_book_query(current_user.id)
     return await make_paginated_query(db, query, skip, limit, is_scaler=False)
-
 
 
 @router.patch("/{target_isbn}",
@@ -95,11 +93,10 @@ async def update_book_status(
     return book_result.one()
 
 
-
 @router.get("/recommendations",
             response_model=list[BookBase],
             status_code=status.HTTP_200_OK,
-)
+            )
 async def get_recommendations(
         request: Request,
         current_user: CurrentUser,
@@ -110,18 +107,17 @@ async def get_recommendations(
     )
     user_library = user_res.all()
     user_history = [(book.isbn, book.rating) for book in user_library]
-    model = request.app.state.model
-    mappings = request.app.state.mappings
+
     recommended_isbns = await run_in_threadpool(
-                                        cold_start_top_k,
-                                        user_history=user_history,
-                                        model=model,
-                                        mappings=mappings,
-                                        top_k=20,
+        faiss_cold_top_k,
+        user_history=user_history,
+        item_embeddings=request.app.state.item_embeddings,
+        faiss_index=request.app.state.faiss_index,
+        mappings=request.app.state.mappings,
+        top_k=20,
     )
     recommended_books = await get_recommended_book_order(recommended_isbns, db)
     return recommended_books
-
 
 
 '''
