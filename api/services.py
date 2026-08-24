@@ -18,9 +18,9 @@ def get_book_query(user_id):
         models.UserBookLink.rating,
         models.UserBookLink.notes,
     )
-        .join(models.UserBookLink, models.Book.id == models.UserBookLink.book_id)
-        .where(models.UserBookLink.user_id == user_id)
-    )
+             .join(models.UserBookLink, models.Book.id == models.UserBookLink.book_id)
+             .where(models.UserBookLink.user_id == user_id)
+             )
     return query
 
 
@@ -55,11 +55,11 @@ async def check_library_entry(user_id: uuid.UUID, book_id: int, db: AsyncSession
 
 
 async def make_paginated_query(db: AsyncSession,
-                            base_query,
-                            skip: int,
-                            limit: int,
-                            is_scaler: bool = True
-):
+                               base_query,
+                               skip: int,
+                               limit: int,
+                               is_scaler: bool = True
+                               ):
     count_result = await db.execute(select(func.count()).select_from(base_query.subquery()))
     total = count_result.scalar() or 0
     result = await db.execute(
@@ -79,14 +79,13 @@ async def make_paginated_query(db: AsyncSession,
         has_more=has_more,
     )
 
-async def get_recommended_book_order(
-    recommended_tuples: list[tuple[str, float]],
-    db: AsyncSession
-):
-    if not recommended_tuples:
-        return []
 
-    selected_isbns = [isbn for isbn, _ in recommended_tuples]
+async def get_recommended_book_order(
+        selected_isbns: list[str],
+        db: AsyncSession
+):
+    if not selected_isbns:
+        return []
 
     query = select(models.Book).where(models.Book.isbn.in_(selected_isbns))
     result = await db.execute(query)

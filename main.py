@@ -1,55 +1,25 @@
 import json
 from contextlib import asynccontextmanager
-from starlette.datastructures import State
 import faiss
 import numpy as np
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import FastAPI, status, Depends, Request, HTTPException
-from typing import Annotated
-
+from fastapi import FastAPI, Request
 from api.config import settings
-from api.schemas import UserBase, BookBase, UserCreate, Token, BookResponse
+from api.schemas import Token
 from api.database import Base, engine, get_db
 import api.models as models
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.responses import JSONResponse
 from datetime import timedelta
 from typing import Annotated
-
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-from starlette.concurrency import run_in_threadpool
-#from routers import users, libraries
 from api.routers.libraries import router as libraries
 from api.routers.users import router as users
 from api.routers.books import router as books
-from ml.engine.inference import load_model
-import os
-#os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
-#
+from api.auth import create_access_token, verify_password
 
-import os
-
-# Must be set BEFORE importing torch
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
-os.environ["OMP_NUM_THREADS"] = "1"
-os.environ["MKL_NUM_THREADS"] = "1"
-
-import torch
-
-# Pin PyTorch CPU threads inside Uvicorn worker process
-torch.set_num_threads(1)
-
-
-from api.auth import (
-    CurrentUser,
-    create_access_token,
-    hash_password,
-    verify_password,
-)
 
 
 @asynccontextmanager

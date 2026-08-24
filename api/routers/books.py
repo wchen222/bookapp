@@ -1,17 +1,14 @@
-from api.schemas import UserBase, BookBase, UserCreate, Token, BookResponse, PaginatedResponse
-from api.database import Base, engine, get_db
+from api.schemas import BookBase, PaginatedResponse
+from api.database import get_db
 import api.models as models
 from api.services import make_paginated_query
-
-
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
 router = APIRouter()
-
 
 
 @router.post(
@@ -33,11 +30,6 @@ async def create_book(
     await db.commit()
     await db.refresh(new_book)
     return book
-
-#write patch endpoint to update book status in library
-
-
-#async def get_book_helper(db: AsyncSession, skip: int, limit: int):
 
 
 @router.get("/search/", response_model=PaginatedResponse[BookBase])

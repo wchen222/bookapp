@@ -1,5 +1,6 @@
 import torch
 
+
 def train_one_epoch(model, dataloader, optimizer, criterion, device):
     model.train()
     running_loss = 0.0
@@ -15,6 +16,7 @@ def train_one_epoch(model, dataloader, optimizer, criterion, device):
     avg_loss = running_loss / len(dataloader.dataset)
     return avg_loss
 
+
 def evaluate(model, dataloader, criterion, device):
     model.eval()
     running_loss = 0.0
@@ -26,6 +28,7 @@ def evaluate(model, dataloader, criterion, device):
             running_loss += loss.item() * len(ratings)
     avg_loss = running_loss / len(dataloader.dataset)
     return avg_loss
+
 
 class EarlyStopping:
     def __init__(self, patience=5, min_delta=0.0):

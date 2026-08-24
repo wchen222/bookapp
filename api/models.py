@@ -1,9 +1,7 @@
 from __future__ import annotations
 import uuid
-from datetime import UTC, datetime
-
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Float, Text, Column, Uuid, Enum as SQLEnum, CheckConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, Integer, String, Float, Text, Uuid, Enum as SQLEnum, CheckConstraint
+from sqlalchemy.orm import Mapped, mapped_column
 
 from api.database import Base
 import enum

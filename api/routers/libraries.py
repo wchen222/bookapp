@@ -1,17 +1,15 @@
 from starlette.concurrency import run_in_threadpool
-from api.schemas import UserBase, BookBase, UserCreate, Token, AddLibraryBook, LibraryBook, PaginatedResponse, \
-    UpdateLibraryBook
-from api.database import Base, engine, get_db
+from api.schemas import BookBase, AddLibraryBook, LibraryBook, PaginatedResponse, UpdateLibraryBook
+from api.database import get_db
 import api.models as models
 from api.models import ReadingStatus
 from api.auth import CurrentUser
 from api.services import (get_book_query, check_book_exists,
                           check_library_entry, make_paginated_query, get_recommended_book_order)
 from ml.engine.inference import faiss_cold_top_k
-
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, status, Request
-from sqlalchemy import func, select
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Request
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
