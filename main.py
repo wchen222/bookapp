@@ -13,7 +13,7 @@ from datetime import timedelta
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from api.routers.libraries import router as libraries
 from api.routers.users import router as users
@@ -21,11 +21,11 @@ from api.routers.books import router as books
 from api.auth import create_access_token, verify_password
 
 
-
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+
+
+    #  recommendation model setup
     app.state.faiss_index = faiss.read_index("ml/engine/artifacts/items.index")
     app.state.item_embeddings = np.load("ml/engine/artifacts/item_embeddings.npy")
     with open("ml/engine/artifacts/mappings.json", "r") as f:
@@ -37,7 +37,6 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan, swagger_ui_parameters={"tryItOutEnabled": True})
-#app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(users, prefix="/api/users", tags=["Users"])
 app.include_router(books, prefix="/api/books", tags=["Book Catalog"])
 app.include_router(libraries, prefix="/api/libraries", tags=["My Library"])
@@ -56,6 +55,8 @@ def general_http_exception_handler(request: Request, exception: StarletteHTTPExc
 @app.get("/")
 def read_root():
     return {"status": "ok", "message": "Book Engine API is running"}
+
+
 
 
 @app.post("/api/auth/token", response_model=Token, tags=["Authentication"])

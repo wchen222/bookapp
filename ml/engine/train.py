@@ -19,16 +19,12 @@ print(f"Using device: {DEVICE}")
 raw_ratings_df = pd.read_csv("../../data/Ratings.csv")
 raw_books_df = pd.read_csv("../../data/books_clean_fixed.csv")
 
-
 print("Raw Ratings ISBN count:", raw_ratings_df['ISBN'].nunique())
 print("Books Clean ISBN count:", raw_books_df['ISBN'].nunique())
-
-
 
 valid_isbns = set(raw_books_df['ISBN'].astype(str).str.strip())
 
 ratings_df, user_to_idx, item_to_idx = prepare_data_mappings(raw_ratings_df, valid_isbns)
-
 
 print(len(user_to_idx), len(item_to_idx))
 
@@ -42,9 +38,9 @@ with open("artifacts/mappings.json", 'w') as f:
     json.dump(mappings, f, indent=2)
 
 train_loader, val_loader, test_loader = get_dataloaders(
-                                            ratings_df,
-                                            train_batch_size=config.TRAIN_BATCH_SIZE,
-                                            eval_batch_size=config.EVAL_BATCH_SIZE)
+    ratings_df,
+    train_batch_size=config.TRAIN_BATCH_SIZE,
+    eval_batch_size=config.EVAL_BATCH_SIZE)
 
 # Training Loop
 model = MFModel(len(user_to_idx), len(item_to_idx), num_features=config.NUM_FEATURES).to(DEVICE)
@@ -84,4 +80,4 @@ best_model = torch.load(f"artifacts/{config.MODEL_NAME}.pt", weights_only=True)
 model.load_state_dict(best_model['model_state_dict'])
 test_loss = evaluate(model=model, dataloader=test_loader, criterion=criterion, device=DEVICE)
 print(f"\nFinal Test Loss (MSE): {test_loss:.4f}")
-print(f"\nFinal Root Mean Square Error: {test_loss**(1/2):.4f}")
+print(f"\nFinal Root Mean Square Error: {test_loss ** (1 / 2):.4f}")

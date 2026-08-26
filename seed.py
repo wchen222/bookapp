@@ -6,6 +6,7 @@ from api.database import AsyncSessionLocal
 BOOK_CSV_PATH = "./data/books_k10.csv"
 BATCH_SIZE = 5000
 
+
 async def seed_books():
     async with AsyncSessionLocal() as db:
         books_batch = []
@@ -35,6 +36,7 @@ async def seed_books():
                 print(f"Pushed all leftover books.")
 
         await db.commit()
+
 
 if __name__ == "__main__":
     asyncio.run(seed_books())
