@@ -30,10 +30,10 @@ async def get_current_user(current_user: CurrentUser):
     return current_user
 
 
-@router.get("", response_model=list[UserBase])
+"""@router.get("", response_model=list[UserBase])
 async def get_users(db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(
         select(models.User)
     )
     users = result.scalars().all()
-    return users
+    return users"""

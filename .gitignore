@@ -7,4 +7,6 @@ __pycache__/
 *.pyc
 .env
 todo.txt
-/data/
+.DS_Store
+data/
+ml/engine/artifacts/model.pt

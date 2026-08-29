@@ -5,7 +5,7 @@ from models import MFModel
 import config
 import json
 from data_utils import prepare_data_mappings, get_dataloaders
-from train_utils import train_one_epoch, evaluate, EarlyStopping
+from ml.training.train_utils import train_one_epoch, evaluate, EarlyStopping
 
 if torch.cuda.is_available():
     DEVICE = "cuda"
@@ -34,7 +34,7 @@ mappings = {
     'idx_to_item': {v: k for k, v in item_to_idx.items()}
 }
 
-with open("artifacts/mappings.json", 'w') as f:
+with open("../engine/artifacts/mappings.json", 'w') as f:
     json.dump(mappings, f, indent=2)
 
 train_loader, val_loader, test_loader = get_dataloaders(

@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 router = APIRouter()
 
 
-@router.post(
+"""@router.post(
     "",
     response_model=BookBase,
     status_code=status.HTTP_201_CREATED
@@ -29,7 +29,7 @@ async def create_book(
     db.add(new_book)
     await db.commit()
     await db.refresh(new_book)
-    return book
+    return book"""
 
 
 @router.get("/search/", response_model=PaginatedResponse[BookBase])

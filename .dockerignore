@@ -1,0 +1,16 @@
+.git/
+
+.venv/
+*.db
+*.sqlite
+*.sqlite3
+.idea/
+__pycache__/
+*.pyc
+.env
+todo.txt
+.DS_Store
+data/
+ml/engine/artifacts/model.pt
+
+ml/training/

@@ -2,9 +2,9 @@ import optuna
 import torch
 import torch.nn as nn
 import pandas as pd
-from ml.engine.models import MFModel
-from ml.engine.data_utils import prepare_data_mappings, get_dataloaders
-from ml.engine.train_utils import train_one_epoch, evaluate, EarlyStopping
+from ml.training.models import MFModel
+from ml.training.data_utils import prepare_data_mappings, get_dataloaders
+from ml.training.train_utils import train_one_epoch, evaluate
 
 if torch.cuda.is_available():
     device = "cuda"
