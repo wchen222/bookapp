@@ -226,3 +226,9 @@ I selected exact MIPS rather than an Approximate Nearest Neighbor technique, and
 * **Expanded Feature Collection:** Dedicate more time to feature collection. I dropped many book ISBNs due to missing values; I can instead dedicate time to harvest and complete missing metadata.
 * **Running Averages & Live Ingestion Pipelines:** Rather than keeping catalog average ratings static, convert them into running averages calculated from live user ratings. To prevent spam and garbage data, add a buffer to detect anomalies and discard them from model updates.
 * **Content-Based & Two-Tower Architecture:** Collaborative filtering especially on cold-start users can only get so far. A more accurate recommendation model can be derived from spending time collecting explicit item features, training through a Two-Tower Network Architecture, and running inference through Approximate Nearest Neighbor (ANN) search rather than precise dot products.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
