@@ -107,7 +107,7 @@ The recommendation service pulls the user's library history from PostgreSQL to c
 
 ## Database Schema
 
-<div style="max-width: 60%; margin: 0 auto;">
+<div style="max-width: 40%; margin: 0 auto;">
 
 ```mermaid
 erDiagram
@@ -141,7 +141,7 @@ erDiagram
 ```
 
 </div>
----
+
 
 ## Recommendation Engine Architecture
 
