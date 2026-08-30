@@ -31,11 +31,11 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 
 <img src="https://github.com/user-attachments/assets/aac0545d-83ab-4464-afa7-c584a39622a5" alt="image" width="50%" />
 
-4. Use the Add Book endpoint to add a book to library, pasting in the book isbn, reading status (must be 'reading' or 'completed' to rate book), and rating (1 - 10)
+4. Use the Add Book endpoint to add a book to library, pasting in the book isbn, reading status (must be 'reading' or 'completed' to rate book), and rating (1 - 10):
 
 <img src="https://github.com/user-attachments/assets/6099d73d-2ebe-4e5e-a7fd-0b1f1d22bf50" alt="image" width="50%" />
 
-5. Add several books to your library, and use the Get Library endpoint to view your personal library
+5. Add several books to your library, and use the Get Library endpoint to view your personal library:
 
 <img src="https://github.com/user-attachments/assets/742cce16-d595-4f2d-96e5-ee377028881b" alt="image" width="50%" />
 
@@ -47,7 +47,7 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 * *A Game of Thrones (A Song of Ice and Fire, Book 1)*
 * *A Clash of Kings (A Song of Fire and Ice, Book 2)*
 
-6. Use the Get Recommendations endpoint to generate personalized recommendations. The more content in your library the better the recommendation results.
+6. Use the Get Recommendations endpoint to generate personalized recommendations. The more content in your library the better the recommendation results:
 
 <img src="https://github.com/user-attachments/assets/a9bb0909-3888-43f8-8aa3-0a5851f6c4b9" alt="image" width="50%" />
 
@@ -107,6 +107,8 @@ The recommendation service pulls the user's library history from PostgreSQL to c
 
 ## Database Schema
 
+<div style="max-width: 60%; margin: 0 auto;">
+
 ```mermaid
 erDiagram
     User {
@@ -138,6 +140,7 @@ erDiagram
     Book ||--o{ UserBookLink : "saved in"
 ```
 
+</div>
 ---
 
 ## Recommendation Engine Architecture
