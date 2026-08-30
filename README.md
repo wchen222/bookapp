@@ -19,27 +19,27 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 
 1. Post endpoint to create a user account:
 
-<img width="1448" height="698" alt="image" src="https://github.com/user-attachments/assets/649a006d-70e2-4c72-ab3d-6aade324732c" />
+<img src="https://github.com/user-attachments/assets/649a006d-70e2-4c72-ab3d-6aade324732c" alt="image" width="60%" />
 
 2. Log in by pressing 'Authorize', using the email as the username:
 
-<img width="204" height="62" alt="image" src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" />
+<img src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" alt="image" width="60%" />
 
-<img width="641" height="561" alt="image" src="https://github.com/user-attachments/assets/6f694fbf-4e7c-4176-9c5e-ea9ade097216" />
+<img src="https://github.com/user-attachments/assets/6f694fbf-4e7c-4176-9c5e-ea9ade097216" alt="image" width="60%" />
 
-<img width="1223" height="1091" alt="image" src="https://github.com/user-attachments/assets/4666014e-1cb0-416f-be30-8e953d8cca75" />
+<img src="https://github.com/user-attachments/assets/4666014e-1cb0-416f-be30-8e953d8cca75" alt="image" width="60%" />
 
 3. Use the Search endpoint to search a book title and copy the isbn of a selected book:
 
-<img width="1461" height="1186" alt="image" src="https://github.com/user-attachments/assets/27ca7a76-600f-4bcc-a51f-f80145cd09c8" />
+<img src="https://github.com/user-attachments/assets/27ca7a76-600f-4bcc-a51f-f80145cd09c8" alt="image" width="60%" />
 
 4. Use the Add Book endpoint to add a book to library, pasting in the book isbn, reading status (must be 'reading' or 'completed' to rate book), and rating (1 - 10)
    
-<img width="1449" height="682" alt="image" src="https://github.com/user-attachments/assets/ad822ff1-9ffe-4f27-a95b-d02b1248b2b6" />
+<img src="https://github.com/user-attachments/assets/ad822ff1-9ffe-4f27-a95b-d02b1248b2b6" alt="image" width="60%" />
 
 5. Add several books to your library, and use the Get Library endpoint to view your personal library
 
-<img width="729" height="430" alt="image" src="https://github.com/user-attachments/assets/8c0db21c-d8e7-415a-9580-c75bc7b9ecf7" />
+<img src="https://github.com/user-attachments/assets/8c0db21c-d8e7-415a-9580-c75bc7b9ecf7" alt="image" width="60%" />
 
 Result:
 
