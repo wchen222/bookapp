@@ -1,6 +1,6 @@
 # Book Tracking Backend & Recommendation Engine
 
-This is a production-grade asynchronous backend API and recommendation engine for tracking and discovering books. Built entirely from scratch without any external APIs, pre-trained wrappers, or third-party recommendation services, this project cleans and processes raw interaction data from the Book-Crossing dataset, trains matrix factorization embeddings, and serves secure endpoints, including executing Maximum Inner Product Search (MIPS) on the learned embeddings via FAISS to generate book recommendations using live user library data stored on PostgreSQL (deployed on Neon). The application is dockerized and deployed on Google Cloud Run to provide everything a frontend or mobile developer needs to build a full user-facing application.
+This is a production-grade asynchronous backend API and recommendation engine for tracking and discovering books. Built entirely from scratch without any external APIs, pre-trained wrappers, or third-party recommendation services, this project cleans and processes raw interaction data from the Book-Crossing dataset, trains matrix factorization embeddings, and serves secure endpoints, including executing Maximum Inner Product Search (MIPS) on the learned embeddings to generate book recommendations using live user data stored on PostgreSQL. The application is dockerized and deployed on Google Cloud Run and provides everything a frontend or mobile developer needs to build a full user-facing application.
 
 Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI / OpenAPI Documentation](https://fastapi-service-399898374657.us-east1.run.app/docs)
 
@@ -23,9 +23,10 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 
 2. Log in by pressing 'Authorize', using the email as the username:
 
-<img src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" alt="image" width="30%" />
-
-<img src="https://github.com/user-attachments/assets/9c7c0c23-676e-47e7-a187-e66c202f589a" alt="image" width="50%" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" alt="image" width="30%" style="vertical-align: middle;" />
+  <img src="https://github.com/user-attachments/assets/9c7c0c23-676e-47e7-a187-e66c202f589a" alt="image" width="50%" style="vertical-align: middle;" />
+</p>
 
 3. Use the Search endpoint to search a book title and copy the isbn of a selected book:
 
@@ -172,7 +173,12 @@ $$u_{\text{temp}} = \frac{\sum_{i \in \text{history}} w_i \cdot x_i}{\sum_{i \in
 
 Where weight $w_i$ for book $i$ is calculated as:
 
-$$w_i = \begin{cases} r_i - 5.0 & \text{if explicitly rated} \\ 2.0 & \text{if unrated} \end{cases}$$
+$$
+w_i = \begin{cases} 
+r_i - 5.0 & \text{if explicitly rated} \\ 
+2.0 & \text{if unrated} 
+\end{cases}
+$$
 
 ### Dot Product for Cold Start Prediction
 
