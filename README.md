@@ -25,9 +25,7 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 
 <img src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" alt="image" width="60%" />
 
-<img src="https://github.com/user-attachments/assets/6f694fbf-4e7c-4176-9c5e-ea9ade097216" alt="image" width="60%" />
-
-<img src="https://github.com/user-attachments/assets/4666014e-1cb0-416f-be30-8e953d8cca75" alt="image" width="60%" />
+<img src="https://github.com/user-attachments/assets/03baf9b3-cd78-443d-95af-fc7db7e7b8f8" alt="image" width="60%" />
 
 3. Use the Search endpoint to search a book title and copy the isbn of a selected book:
 
@@ -39,87 +37,16 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 
 5. Add several books to your library, and use the Get Library endpoint to view your personal library
 
-<img src="https://github.com/user-attachments/assets/8c0db21c-d8e7-415a-9580-c75bc7b9ecf7" alt="image" width="60%" />
+<img src="https://github.com/user-attachments/assets/349b42f9-7aa3-461c-938e-1a8c09b06799" alt="image" width="60%" />
 
-Result:
+My Library Includes:
 
-```json
-
-{
-  "items": [
-    {
-      "isbn": "0345339703",
-      "title": "The Fellowship of the Ring (The Lord of the Rings, Part 1)",
-      "author": "J.R.R. TOLKIEN",
-      "year": 1986,
-      "average_rating": 8.8,
-      "rating_count": 257,
-      "status": "completed",
-      "rating": 10,
-      "notes": null
-    },
-    {
-      "isbn": "0553580272",
-      "title": "House Atreides (Dune: House Trilogy, Book 1)",
-      "author": "Brian Herbert",
-      "year": 2000,
-      "average_rating": 7.7,
-      "rating_count": 52,
-      "status": "completed",
-      "rating": 10,
-      "notes": null
-    },
-    {
-      "isbn": "0590353403",
-      "title": "Harry Potter and the Sorcerer's Stone (Book 1)",
-      "author": "J. K. Rowling",
-      "year": 1998,
-      "average_rating": 9,
-      "rating_count": 168,
-      "status": "completed",
-      "rating": 10,
-      "notes": null
-    },
-    {
-      "isbn": "0345339681",
-      "title": "The Hobbit : The Enchanting Prelude to The Lord of the Rings",
-      "author": "J.R.R. TOLKIEN",
-      "year": 1986,
-      "average_rating": 8.7,
-      "rating_count": 281,
-      "status": "completed",
-      "rating": 10,
-      "notes": null
-    },
-    {
-      "isbn": "0553573403",
-      "title": "A Game of Thrones (A Song of Ice and Fire, Book 1)",
-      "author": "George R.R. Martin",
-      "year": 1997,
-      "average_rating": 8.5,
-      "rating_count": 87,
-      "status": "completed",
-      "rating": 10,
-      "notes": null
-    },
-    {
-      "isbn": "0553579908",
-      "title": "A Clash of Kings (A Song of Fire and Ice, Book 2)",
-      "author": "George R. R. Martin",
-      "year": 2000,
-      "average_rating": 8.5,
-      "rating_count": 33,
-      "status": "completed",
-      "rating": 10,
-      "notes": null
-    }
-  ],
-  "total": 6,
-  "skip": 0,
-  "limit": 20,
-  "has_more": false
-}
-```
+The Fellowship of the Ring (The Lord of the Rings, Part 1)
+House Atreides (Dune: House Trilogy, Book 1)
+Harry Potter and the Sorcerer's Stone (Book 1)
+The Hobbit : The Enchanting Prelude to The Lord of the Rings
+A Game of Thrones (A Song of Ice and Fire, Book 1)
+A Clash of Kings (A Song of Fire and Ice, Book 2)
 
 6. Use the Get Recommendations endpoint to generate personalized recommendations. The more content in your library the better the recommendation results.
 
@@ -177,7 +104,7 @@ Result (Personalized recommendations based on my Fantasy preference with a mix o
     "average_rating": 9,
     "rating_count": 57
   },
-// ... 17 additional recommendations truncated for conciseness
+// ... 14 additional recommendations truncated for conciseness
 ]
 ```
 
