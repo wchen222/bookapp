@@ -56,14 +56,6 @@ Result (Personalized recommendations based on my Fantasy preference with a mix o
 ```json
 [
   {
-    "isbn": "043935806X",
-    "title": "Harry Potter and the Order of the Phoenix (Book 5)",
-    "author": "J. K. Rowling",
-    "year": 2003,
-    "average_rating": 9,
-    "rating_count": 334
-  },
-  {
     "isbn": "0345339738",
     "title": "The Return of the King (The Lord of the Rings, Part 3)",
     "author": "J.R.R. TOLKIEN",
@@ -78,14 +70,6 @@ Result (Personalized recommendations based on my Fantasy preference with a mix o
     "year": 1999,
     "average_rating": 9,
     "rating_count": 197
-  },
-  {
-    "isbn": "0439139597",
-    "title": "Harry Potter and the Goblet of Fire (Book 4)",
-    "author": "J. K. Rowling",
-    "year": 2000,
-    "average_rating": 9.3,
-    "rating_count": 194
   },
   {
     "isbn": "0345339711",
@@ -103,7 +87,7 @@ Result (Personalized recommendations based on my Fantasy preference with a mix o
     "average_rating": 9,
     "rating_count": 57
   },
-// ... 14 additional recommendations truncated for conciseness
+// ... 16 additional recommendations truncated for conciseness
 ]
 ```
 
@@ -199,7 +183,7 @@ Where $2.0$ is the amplifier for weight of books in user history.
 
 ### Tradeoff Between Information Density vs. Dataset Size 
 
-<img src="[https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955](https://github.com/user-attachments/assets/ac4131c3-88d1-45c6-8ccb-24a2efa1bdf8)" alt="output" width="50%" />
+<img src="https://github.com/user-attachments/assets/2a0a8c4b-62bc-4bec-ab00-2113fdd966d1" alt="output" width="50%" />
 
 This graph shows the x-axis as the number of ratings a book needs to be eligible for inclusion to the training set. Using the "elbow method", it can be seen that filtering books to have at least 3 ratings is where there is a sharp drop in the eligible books (blue line). This is beneficial as it increases the information density in our training set, providing better training results. 
 
