@@ -23,10 +23,9 @@ Live Interactive API Documentation (Allow a few seconds to boot up): [Swagger UI
 
 2. Log in by pressing 'Authorize', using the email as the username:
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" alt="image" width="30%" style="vertical-align: middle;" />
-  <img src="https://github.com/user-attachments/assets/9c7c0c23-676e-47e7-a187-e66c202f589a" alt="image" width="50%" style="vertical-align: middle;" />
-</p>
+<img src="https://github.com/user-attachments/assets/0b54fa87-15e1-4a03-9d22-07b395a22955" alt="image" width="30%" />
+
+<img src="https://github.com/user-attachments/assets/9c7c0c23-676e-47e7-a187-e66c202f589a" alt="image" width="50%" /> 
 
 3. Use the Search endpoint to search a book title and copy the isbn of a selected book:
 
